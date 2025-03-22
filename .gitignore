@@ -1,0 +1,65 @@
+# Python相关
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 虚拟环境
+venv/
+env/
+ENV/
+.venv/
+.env
+
+# 本地开发环境
+.env
+.env.test
+.env.local
+.env.development
+.env.production
+
+# 日志文件
+*.log
+logs/
+
+# 缓存
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE相关
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# 临时文件
+tmp/
+temp/
+
+# 数据文件
+*.db
+*.sqlite
+*.sqlite3
+data/
+
+# 项目特定文件
+# 如有其他需要忽略的项目特定文件，请在此处添加 
