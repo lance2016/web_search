@@ -11,7 +11,6 @@
 - **架构师友好**：遵循 SOLID 原则，采用依赖注入、工厂模式和单例模式等设计模式
 - **环境变量配置**：通过环境变量进行配置，支持多环境部署
 - **完整的 API 文档**：自动生成的 Swagger UI 文档，方便开发和测试
-- **全面的测试覆盖**：包含单元测试和集成测试，确保代码质量和功能正确性
 
 ## 系统架构
 
@@ -22,9 +21,8 @@ app/
 ├── api/                # API 层 - 处理 HTTP 请求和响应
 ├── core/               # 核心层 - 配置和共享功能
 ├── schemas/            # 数据模型层 - 请求和响应的数据结构
-├── services/           # 服务层 - 业务逻辑
-│   └── search_engines/ # 搜索引擎实现
-└── tests/              # 测试
+└── services/           # 服务层 - 业务逻辑
+    └── search_engines/ # 搜索引擎实现
 ```
 
 ## 系统要求
@@ -55,12 +53,6 @@ source venv/bin/activate  # Windows 上使用: venv\Scripts\activate
 
 ```bash
 pip install -r requirements.txt
-```
-
-4. 安装开发依赖（可选）：
-
-```bash
-pip install -e .
 ```
 
 ### 配置
@@ -100,60 +92,6 @@ python run.py
 ```bash
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
-
-## 测试
-
-项目包含全面的测试套件，包括单元测试和集成测试。
-
-### 运行测试
-
-执行单元测试：
-
-```bash
-python run_tests.py
-```
-
-查看单元测试覆盖率：
-
-```bash
-python run_tests.py --cov
-```
-
-执行集成测试（需要配置实际的 API 密钥）：
-
-```bash
-# 首先创建并配置集成测试环境变量
-cp .env.example .env.test
-# 编辑 .env.test 设置实际的 API 密钥
-# 然后运行集成测试
-python run_tests.py --integration
-```
-
-运行所有测试：
-
-```bash
-python run_tests.py --all
-```
-
-### 测试结构
-
-测试文件组织如下：
-
-```
-app/tests/
-├── test_api.py                 # API 接口单元测试
-├── test_google_search_engine.py  # Google 搜索引擎单元测试
-├── test_search_service.py      # 搜索服务单元测试
-└── test_integration.py         # 集成测试，直接调用真实 API
-```
-
-### 测试策略
-
-- **单元测试**：使用 `pytest` 和 `unittest.mock` 测试各个组件
-- **集成测试**：直接调用真实 API 接口，验证端到端功能
-- **异步测试**：使用 `pytest-asyncio` 测试异步功能
-- **HTTP 测试**：使用 FastAPI 的 `TestClient` 测试 API 端点
-- **服务器测试**：启动实际服务器进程，模拟真实环境
 
 ## API 文档
 
@@ -230,6 +168,63 @@ POST /api/cache/clear-expired
 
 仅清除已过期的缓存数据。
 
+## 验证 API
+
+以下是一些可用于验证 API 正常工作的 curl 命令：
+
+### 验证健康检查
+
+```bash
+curl -X GET "http://localhost:8000/health"
+```
+
+预期输出：
+```json
+{
+  "status": "ok",
+  "environment": "development",
+  "version": "0.1.0"
+}
+```
+
+### 获取可用搜索引擎
+
+```bash
+curl -X GET "http://localhost:8000/api/search/engines"
+```
+
+预期输出：
+```json
+{
+  "engines": [
+    {
+      "name": "google",
+      "is_available": true,
+      "description": "Google自定义搜索引擎"
+    }
+  ],
+  "total": 1
+}
+```
+
+### 执行搜索查询
+
+```bash
+curl -X GET "http://localhost:8000/api/search/search?query=FastAPI%20Python&engine=google&num_results=5"
+```
+
+### 获取缓存统计
+
+```bash
+curl -X GET "http://localhost:8000/api/cache/stats"
+```
+
+### 清空缓存
+
+```bash
+curl -X POST "http://localhost:8000/api/cache/clear"
+```
+
 ## 缓存系统
 
 本系统实现了一个内存缓存机制，可以有效减少对外部API的重复调用，提高响应速度并降低成本。
@@ -250,14 +245,6 @@ POST /api/cache/clear-expired
 CACHE_ENABLED=True  # 是否启用缓存
 CACHE_TTL=3600  # 缓存生存时间(秒)
 ```
-
-### 缓存API
-
-系统提供了专门的缓存管理API，允许查看和管理缓存：
-
-- `GET /api/cache/stats` - 获取缓存统计信息
-- `POST /api/cache/clear` - 清空所有缓存
-- `POST /api/cache/clear-expired` - 清除过期缓存
 
 ### 缓存控制
 
@@ -338,19 +325,6 @@ engine_descriptions = {
     ...,
     "new_engine": "新搜索引擎描述"
 }
-```
-
-6. 为新引擎添加测试用例，包括单元测试和集成测试：
-
-```python
-# app/tests/test_new_engine.py - 单元测试
-import pytest
-from app.services.search_engines.new_engine import NewSearchEngine
-
-# 添加相应的单元测试...
-
-# app/tests/test_integration.py - 集成测试
-# 在TestAPI类中添加新引擎的测试
 ```
 
 ## 架构设计原则
